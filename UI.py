@@ -4,8 +4,11 @@ from pygame.locals import *
 import time
 from main import valid ,solve
 
+
 pygame.font.init()
 fnt=pygame.font.SysFont("comiscans",40)
+
+
 class Grid:
     Board= [
         [7, 8, 0, 4, 0, 0, 1, 2, 0],
@@ -74,7 +77,7 @@ class Grid:
             gap=self.width/9
             x=pos[0]//gap
             y=pos[1]//gap
-            return (int(x),int(y))
+            return (int(y),int(x))
         else:
             return None
 
@@ -97,8 +100,8 @@ class Cube:
     def draw(self,screen):
    
         gap=self.width/9
-        x=self.row*gap
-        y=self.col*gap
+        x=self.col*gap
+        y=self.row*gap
 
         if self.temp!=0 and self.value==0:
             text=fnt.render(str(self.temp),1,(125,125,125))
@@ -117,7 +120,7 @@ class Cube:
 
 def draw_window(screen,board,time,strikes):
     screen.fill((255,255,255))
-    text=fnt.render(f"Time:{time_format(time)}",1,(0,0,0))
+    text=fnt.render(f"Time:"+time_format(time),1,(0,0,0))
     screen.blit(text,(380,555))
     text=fnt.render(f"X: {strikes}",1,(255,0,0))
     screen.blit(text,(20,555))
@@ -125,10 +128,12 @@ def draw_window(screen,board,time,strikes):
 
 
 def time_format(secs):
-    secs=secs%60
-    mins=secs//60
-    Time=f" {mins}:{secs}"
-    return Time
+    sec=secs%60
+    minutes=sec//60
+    hour=minutes//60
+    mat =str(hour)+ ":" + str(minutes) + ":" + str(sec)
+    return mat
+
 
 
 def main():
@@ -140,10 +145,41 @@ def main():
     start=time.time()
     strikes=0
     while run:
-        play_time=round(time.time() - start)
+        play_time = round(time.time() -start)
         for event in pygame.event.get():
             if event.type==QUIT:
-                pygame.quit()
+                run=False
+            if event.type==KEYDOWN:
+                if event.key==pygame.K_1 or event.key==K_KP1:
+                    key=1
+                if event.key==K_2 or event.key==K_KP2:
+                    key=2
+                if event.key==K_3 or event.key==K_KP3:
+                    key=3
+                if event.key==K_4 or event.key==K_KP4:
+                    key=4
+                if event.key==K_5 or event.key==K_KP5:
+                    key=5
+                if event.key==K_6 or event.key==K_KP6:
+                    key=6
+                if event.key==K_7 or event.key==K_KP7:
+                    key=7
+                if event.key==K_8 or event.key==K_KP8:
+                    key=8
+                if event.key==K_9 or event.key==K_KP9:
+                    key=9
+                if event.key==K_RETURN:
+                    i,j=board.selected
+                    if board.cubes[i][j].temp!=0:
+                        if board.place(board.cubes[i][j].temp):
+                            print("Success")
+                        else:
+                            print("Wrong")
+                            strikes+=1
+                        key=None
+                        if board.is_finished():
+                            print("Game over")
+                            run =False
             if event.type==MOUSEBUTTONDOWN:
                 pos=mouse.get_pos()
                 clicked=board.click(pos)
@@ -153,6 +189,7 @@ def main():
 
         if board.selected and key!=None:
             board.sketch(key)
+
         draw_window(screen,board,play_time,strikes)
         pygame.display.update()
 
@@ -160,4 +197,4 @@ def main():
 if __name__ == "__main__":
     pygame.init()
     main()
-    # pygame.quit()
+    pygame.quit()
