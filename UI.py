@@ -46,7 +46,7 @@ class Grid:
             if valid(self.board,i,(row,col)):
                 self.board[row][col]=i
                 self.cubes[row][col].set(i)
-                self.cubes[row][col].draw_changes(self.screen,True)
+                self.cubes[row][col].draw_changes(self.screen,False)
                 self.update_board()
                 pygame.display.update()
                 pygame.time.delay(100)
@@ -55,7 +55,7 @@ class Grid:
                 self.board[row][col]=0
                 self.cubes[row][col].set(0)
                 self.update_board()
-                self.cubes[row][col].draw_changes(self.screen,False)
+                self.cubes[row][col].draw_changes(self.screen,True)
                 pygame.display.update()
                 pygame.time.delay(100)
 
@@ -147,17 +147,17 @@ class Cube:
         if self.selected:
             pygame.draw.rect(screen,(255,0,0),(x,y,gap,gap),3)
 
-    def draw_changes(self,screen,g=True):
+    def draw_changes(self,screen,backtrack=True):
         gap=self.width/9
         x=self.col*gap
         y=self.row*gap
         pygame.draw.rect(screen,(255,255,255),(x,y,gap,gap),0)
         text=fnt.render(str(self.value),1,(0,0,0))
         screen.blit(text,(x+(gap/2 - text.get_width()/2),y+(gap/2 - text.get_height()/2)))
-        if g:
-            pygame.draw.rect(screen,(0,255,0),(x,y,gap,gap),3)
-        else:
+        if backtrack:
             pygame.draw.rect(screen,(255,0,0),(x,y,gap,gap),3)
+        else:
+            pygame.draw.rect(screen,(0,255,0),(x,y,gap,gap),3)
 
     def set_temp(self,val):
         self.temp=val
