@@ -51,7 +51,15 @@ class Grid:
 
         return False
 
-        
+    def resart_board(self):
+        for i in range(len(self.Board)):
+            for j in range(len(self.Board[0])):
+                self.cubes[i][j].set_temp(0)
+                self.cubes[i][j].set(0)
+                self.update_board()
+                if self.Board[i][j]!=0:
+                    self.cubes[i][j].set(self.Board[i][j])
+                    self.update_board()
 
     def place(self,val):
         row,col=self.selected
@@ -207,6 +215,9 @@ def main():
                 if event.key==K_SPACE:
                     board.Solver()
                 if event.key==K_DELETE:
+                    board.resart_board()
+                    key=None
+                if event.key==K_BACKSPACE:
                     board.clear()
                     key=None
                 if event.key==K_RETURN:
